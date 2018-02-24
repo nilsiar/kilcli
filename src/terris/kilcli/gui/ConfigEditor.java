@@ -29,36 +29,31 @@
 
 package terris.kilcli.gui;
 
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JCheckBox;
-import javax.swing.JTabbedPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.JScrollPane;
-import javax.swing.plaf.*;
-import javax.swing.plaf.metal.*;
-import javax.swing.plaf.basic.*;
-import javax.swing.JLabel;
-import javax.swing.JSlider;
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import terris.kilcli.io.*;
-import terris.kilcli.writer.*;
-import terris.kilcli.*;
-import terris.kilcli.resource.*;
-import terris.kilcli.thread.*;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+
+import terris.kilcli.KilCli;
+import terris.kilcli.resource.KilCliTextField;
+import terris.kilcli.resource.ScriptPanel;
+import terris.kilcli.thread.KilCliThread;
 
 
 /**
@@ -68,17 +63,17 @@ import terris.kilcli.thread.*;
  */
 
 public class ConfigEditor extends JDialog {
-    private JScrollPane jScroll = new JScrollPane();
-    private JScrollPane jScroll2 = new JScrollPane();
-    private JScrollPane jScroll3 = new JScrollPane();
-    private JScrollPane jScroll4 = new JScrollPane();
-    private JScrollPane jScroll5 = new JScrollPane();
-    private JScrollPane jScroll6 = new JScrollPane();
-    private JScrollPane jScroll7 = new JScrollPane();
-    private JScrollPane jScroll8 = new JScrollPane();
-    private JScrollPane jScroll9 = new JScrollPane();
-    private JSplitPane	jSplit;
-	private JTabbedPane tabbedpane;
+    private final JScrollPane jScroll = new JScrollPane();
+    private final JScrollPane jScroll2 = new JScrollPane();
+    private final JScrollPane jScroll3 = new JScrollPane();
+    private final JScrollPane jScroll4 = new JScrollPane();
+    private final JScrollPane jScroll5 = new JScrollPane();
+    private final JScrollPane jScroll6 = new JScrollPane();
+    private final JScrollPane jScroll7 = new JScrollPane();
+    private final JScrollPane jScroll8 = new JScrollPane();
+    private final JScrollPane jScroll9 = new JScrollPane();
+    private final JSplitPane	jSplit;
+	private final JTabbedPane tabbedpane;
 	private JTextField echoText;
 	private JTextField help;
 	private JTextField chats;
@@ -91,6 +86,7 @@ public class ConfigEditor extends JDialog {
 	private JTextField tshouts;
 	private JTextField wails;
 	private JTextField logons;
+	private JTextField cityshouts;
 	private JTextField proxyServer;
 	private JTextField proxyPort;
 	private JTextField startSoundFilename;
@@ -100,7 +96,7 @@ public class ConfigEditor extends JDialog {
 	private KilCliTextField aliasFlag;
 	private ScriptPanel startupScript;
 	private ScriptPanel logonScript;
-	private JComboBox theme = new JComboBox();
+	private final JComboBox theme = new JComboBox();
 	private JComboBox chatsBox = new JComboBox();
 	private JComboBox eventsBox = new JComboBox();
 	private JComboBox gshoutsBox = new JComboBox();
@@ -109,6 +105,7 @@ public class ConfigEditor extends JDialog {
 	private JComboBox shoutsBox = new JComboBox();
 	private JComboBox tellsBox = new JComboBox();
 	private JComboBox tshoutsBox = new JComboBox();
+	private JComboBox cityshoutsBox = new JComboBox();
 	private JComboBox wailsBox = new JComboBox();
 	private JComboBox logonsBox = new JComboBox();
 	private JComboBox proxyType = new JComboBox();
@@ -142,6 +139,7 @@ public class ConfigEditor extends JDialog {
 	private JCheckBox oldStyleTShouts;
 	private JCheckBox oldStyleWails;
 	private JCheckBox oldStyleInfo;
+	private JCheckBox oldStyleCityShouts;
 	private JCheckBox oldStyleHarden;
 	private JCheckBox monitorHarden;
 	private JCheckBox bindPageUpDown;
@@ -154,6 +152,7 @@ public class ConfigEditor extends JDialog {
 	private JCheckBox shoutStamp;
 	private JCheckBox tellStamp;
 	private JCheckBox tshoutStamp;
+	private JCheckBox cityshoutStamp;
 	private JCheckBox wailStamp;
 	private JCheckBox chatToKchat;
 	private JCheckBox numpadEnterSendCommand;
@@ -164,7 +163,7 @@ public class ConfigEditor extends JDialog {
 	private JSlider HPWarn;
 	private JSlider SPWarn;
 
-	private String[] config;
+	private final String[] config;
 
 	public void updateTheme() {
 		repaint();
@@ -181,7 +180,8 @@ public class ConfigEditor extends JDialog {
 		JButton ok = new JButton("Ok");
 		ok.addActionListener(new ActionListener() {
 			//function for when someone clicks OK
-		    public void actionPerformed(ActionEvent e) {
+		    @Override
+			public void actionPerformed(ActionEvent e) {
 				update();
 				close();
 		    }
@@ -189,6 +189,7 @@ public class ConfigEditor extends JDialog {
 		JButton apply = new JButton("Apply");
 		apply.addActionListener(new ActionListener() {
 			//function for when someone clicks Apply
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				update();
 			}
@@ -196,6 +197,7 @@ public class ConfigEditor extends JDialog {
 		JButton reset = new JButton("Reset");
 		reset.addActionListener(new ActionListener() {
 			//function for when someone clicks Reset
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				clear();
 			}
@@ -203,7 +205,8 @@ public class ConfigEditor extends JDialog {
 		JButton cancel = new JButton("Cancel");
 		cancel.addActionListener(new ActionListener() {
 			//function to clear fields;
-		    public void actionPerformed(ActionEvent e) {
+		    @Override
+			public void actionPerformed(ActionEvent e) {
 				close();
 		    }
 		});
@@ -229,6 +232,7 @@ public class ConfigEditor extends JDialog {
 		shoutsBox = addItems();
 		tellsBox = addItems();
 		tshoutsBox = addItems();
+		cityshoutsBox = addItems();
 		wailsBox = addItems();
 		logonsBox = addItems();
 		kchatTellBox = addItems();
@@ -282,7 +286,7 @@ public class ConfigEditor extends JDialog {
 
         //Set the window's location.
         setLocation((int)(screenSize.width * 0.25), (int)(screenSize.height * 0.25));
-        jSplit.setDividerLocation((int)(this.getHeight() - 75));
+        jSplit.setDividerLocation(this.getHeight() - 75);
         setVisible(true);
 
 	}
@@ -304,6 +308,7 @@ public class ConfigEditor extends JDialog {
 		temp.addItem("Tells");
 		temp.addItem("TShouts");
 		temp.addItem("Wails");
+		temp.addItem("City Shouts");
 		return temp;
 	}
 
@@ -351,7 +356,9 @@ public class ConfigEditor extends JDialog {
 		} else if (box.getSelectedIndex() == 9) {
 			return "T";
 		} else if (box.getSelectedIndex() == 10) {
-			return "W";
+			return "W";	
+		} else if (box.getSelectedIndex() == 11) {
+			return "c";
 		}
 		return "g";
 	}
@@ -624,6 +631,12 @@ public class ConfigEditor extends JDialog {
 		}
 		config[85] = checkBox(kchatTellBox);
 		config[86] = checkBox(kchatChatBox);
+		
+		config[87] = checkBox(tshoutsBox);
+		config[88] = cityshoutStamp.isSelected() ? "true" : "false";	
+		config[89] = oldStyleCityShouts.isSelected() ? "true" : "false";		
+		config[90] = cityshouts.getText();
+				
 		KilCli.updateOptions(config);
 		new JOptionPane().showMessageDialog(this, "Config Updated");
 	}
@@ -632,11 +645,11 @@ public class ConfigEditor extends JDialog {
 	 * Creates the window prefixes pane
 	 */
 	private void createWindows() {
-		jScroll2.setVerticalScrollBarPolicy(22);
+		jScroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		JPanel view = new JPanel();
 		JPanel cell = new JPanel();
 		JLabel pix = new JLabel();
-		view.setLayout(new GridLayout(10, 2, 0, 5));
+		view.setLayout(new GridLayout(11, 2, 0, 5));
 		pix = new JLabel("Chats Prefix:");
 		cell.add(pix);
 		view.add(cell);
@@ -708,6 +721,7 @@ public class ConfigEditor extends JDialog {
 		tells.setText(config[8]);
 		cell.add(tells);
 		view.add(cell);
+		
 		cell = new JPanel();
 		pix = new JLabel("TShouts Prefix:");
 		cell.add(pix);
@@ -717,6 +731,8 @@ public class ConfigEditor extends JDialog {
 		tshouts.setText(config[7]);
 		cell.add(tshouts);
 		view.add(cell);
+		
+		
 		cell = new JPanel();
 		pix = new JLabel("Wails Prefix:");
 		cell.add(pix);
@@ -726,6 +742,18 @@ public class ConfigEditor extends JDialog {
 		wails.setText(config[12]);
 		cell.add(wails);
 		view.add(cell);
+		
+		cell = new JPanel();
+		pix = new JLabel("City Shouts Prefix:");
+		cell.add(pix);
+		view.add(cell);
+		cell = new JPanel();
+		cityshouts = new JTextField(10);
+		cityshouts.setText(config[90]);
+		cell.add(cityshouts);
+		view.add(cell);
+		
+		// //////////////////////////////////
 		jScroll2.setViewportView(view);
 	}
 
@@ -733,7 +761,7 @@ public class ConfigEditor extends JDialog {
 	 * Creates the General Config pane
 	 */
 	private void createGeneral() {
-		jScroll.setVerticalScrollBarPolicy(22);
+		jScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		JPanel view = new JPanel();
 		JPanel cell = new JPanel();
 		JLabel pix = new JLabel();
@@ -917,7 +945,7 @@ public class ConfigEditor extends JDialog {
 	 * Creates the Status Warnings pane
 	 */
 	private void createStatus() {
-		jScroll3.setVerticalScrollBarPolicy(22);
+		jScroll3.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		JPanel view = new JPanel();
 		JPanel cell = new JPanel();
 		JLabel pix = new JLabel();
@@ -978,7 +1006,7 @@ public class ConfigEditor extends JDialog {
 	 * Creates the sound config pane
 	 */
 	private void createSound() {
-		jScroll4.setVerticalScrollBarPolicy(22);
+		jScroll4.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		JPanel view = new JPanel();
 		JPanel cell = new JPanel();
 		JLabel pix = new JLabel();
@@ -1030,11 +1058,11 @@ public class ConfigEditor extends JDialog {
 	 * Creates the Window Title Bars pane
 	 */
 	private void createTitleBars() {
-		jScroll7.setVerticalScrollBarPolicy(22);
+		jScroll7.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		JPanel view = new JPanel();
 		JPanel cell = new JPanel();
 		JLabel pix = new JLabel();
-		view.setLayout(new GridLayout(20, 2, 0, 5));
+		view.setLayout(new GridLayout(21, 2, 0, 5));
 		cell = new JPanel();
 		pix = new JLabel("Old Style Chats Window:");
 		cell.add(pix);
@@ -1234,6 +1262,20 @@ public class ConfigEditor extends JDialog {
 		oldStyleWails.setSelected(config[60].equalsIgnoreCase("true"));
 		cell.add(oldStyleWails);
 		view.add(cell);
+		
+		
+		cell = new JPanel();
+		pix = new JLabel("Old Style City Shouts Window:");
+		cell.add(pix);
+		view.add(cell);
+		cell = new JPanel();
+		oldStyleCityShouts = new JCheckBox();
+		oldStyleCityShouts.setSelected(config[89].equalsIgnoreCase("true"));
+		cell.add(oldStyleCityShouts);
+		view.add(cell);
+		
+		// ///////////////////////////////
+		
 		jScroll7.setViewportView(view);
 	}
 
@@ -1263,19 +1305,22 @@ public class ConfigEditor extends JDialog {
 			return 9;
 		} else if (window == 'W') {
 			return 10;
+		} else if (window == 'c') {
+			return 11;
 		}
-		return 2;
+		
+		return 2; // default game window
 	}
 
 	/**
 	 * Creates the Time Stamps pane
 	 */
 	private void createTimeStamps() {
-		jScroll8.setVerticalScrollBarPolicy(22);
+		jScroll8.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		JPanel view = new JPanel();
 		JPanel cell = new JPanel();
 		JLabel pix = new JLabel();
-		view.setLayout(new GridLayout(9, 2, 0, 5));
+		view.setLayout(new GridLayout(11, 2, 0, 5));
 		pix = new JLabel("Chat Window Time Stamp:");
 		cell.add(pix);
 		view.add(cell);
@@ -1370,6 +1415,18 @@ public class ConfigEditor extends JDialog {
 		}
 		cell.add(tshoutStamp);
 		view.add(cell);
+		
+		cell = new JPanel();
+		pix = new JLabel("City Shouts Window Time Stamp:");
+		cell.add(pix);
+		view.add(cell);
+		cell = new JPanel();
+		cityshoutStamp = new JCheckBox();
+		if (config[88].toLowerCase().equals("true")) {
+			cityshoutStamp.setSelected(true);
+		}
+		cell.add(cityshoutStamp);
+		view.add(cell);
 
 		cell = new JPanel();
 		pix = new JLabel("Wails Window Time Stamp:");
@@ -1390,11 +1447,11 @@ public class ConfigEditor extends JDialog {
 	 * Creates the text routing pane
 	 */
 	private void createTextRouting() {
-		jScroll5.setVerticalScrollBarPolicy(22);
+		jScroll5.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		JPanel view = new JPanel();
 		JPanel cell = new JPanel();
 		JLabel pix = new JLabel();
-		view.setLayout(new GridLayout(10, 2, 0, 0));
+		view.setLayout(new GridLayout(11, 2, 0, 0));
 		pix = new JLabel("Chats Window Text:");
 		cell.add(pix);
 		view.add(cell);
@@ -1475,6 +1532,15 @@ public class ConfigEditor extends JDialog {
 		cell.add(tshoutsBox);
 		tshoutsBox.setSelectedIndex(windowBoxIndexSelection(config[33].charAt(0)));
 		view.add(cell);
+		
+		cell = new JPanel();
+		pix = new JLabel("City Shouts Window Text:");
+		cell.add(pix);
+		view.add(cell);
+		cell = new JPanel();
+		cell.add(cityshoutsBox);
+		cityshoutsBox.setSelectedIndex(windowBoxIndexSelection(config[87].charAt(0)));
+		view.add(cell);
 
 		cell = new JPanel();
 		pix = new JLabel("Wails Window Text:");
@@ -1492,7 +1558,7 @@ public class ConfigEditor extends JDialog {
 	 * Creates the Proxy pane
 	 */
 	private void createProxy() {
-		jScroll6.setVerticalScrollBarPolicy(22);
+		jScroll6.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		JPanel view = new JPanel();
 		JPanel cell = new JPanel();
 		view.add(cell);
@@ -1573,7 +1639,7 @@ public class ConfigEditor extends JDialog {
 	 * Creates the Proxy pane
 	 */
 	private void createChat() {
-		jScroll9.setVerticalScrollBarPolicy(22);
+		jScroll9.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		JPanel view = new JPanel();
 		JPanel cell = new JPanel();
 		view.add(cell);

@@ -30,9 +30,9 @@
 package terris.kilcli.loader;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
@@ -48,7 +48,7 @@ public class ConfigLoader {
 
 
 	private static String[] loadDefaults() {
-		String[] settings = new String[87];
+		String[] settings = new String[91];
 		settings[0] = "false";
 		settings[1] = "false";
 		settings[2] = "true";
@@ -136,6 +136,13 @@ public class ConfigLoader {
 		settings[84] = "true";
 		settings[85] = "t";
 		settings[86] = "C";
+		
+		// city shouts
+		settings[87] = "c"; 
+		settings[88] = "false";
+		settings[89] = "false";
+		settings[90] = "CityShouts: ";
+		
 		return settings;
 	}
 
@@ -214,7 +221,7 @@ public class ConfigLoader {
 	 */
 
 	public static String[] loadColors(String profile) throws IOException{
-		String slash = System.getProperty("file.separator");
+		final String slash = System.getProperty("file.separator");
 		String fileName = "config" + slash + profile + slash + "colors.txt";
 		String line = "";
 		int count = 0;

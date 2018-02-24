@@ -29,45 +29,34 @@
 
 package terris.kilcli.window;
 
-import javax.swing.JInternalFrame;
-import javax.swing.JTextPane;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.JScrollPane;
-import javax.swing.text.Style;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.StyleSheet;
-import javax.swing.plaf.*;
-import javax.swing.plaf.metal.*;
-import javax.swing.plaf.basic.*;
-import javax.swing.JPopupMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.JEditorPane;
-import javax.swing.JColorChooser;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
-import javax.swing.text.html.HTMLFrameHyperlinkEvent;
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.BorderLayout;
-import java.io.IOException;
-import java.net.URL;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileReader;
-import java.awt.Font;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseListener;
+import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.HTMLFrameHyperlinkEvent;
+import javax.swing.text.html.StyleSheet;
+
 import terris.kilcli.resource.FontChooser;
-import terris.kilcli.writer.CSSWriter;
-import terris.kilcli.thread.KilCliThread;
 import terris.kilcli.resource.KilCliText;
+import terris.kilcli.thread.KilCliThread;
+import terris.kilcli.writer.CSSWriter;
 
 /**
  * HelpWindow for KilCli is the class used to display the<br>
@@ -76,11 +65,11 @@ import terris.kilcli.resource.KilCliText;
  */
 
 public class HelpWindow extends KilCliInternalFrame implements HyperlinkListener {
-    private KilCliText edit = new KilCliText(false);
-    private JButton back;
-    private JPanel urlPanel;
-    private JTextField urlField;
-    private JScrollPane jScroll;
+    private final KilCliText edit = new KilCliText(false);
+    private final JButton back;
+    private final JPanel urlPanel;
+    private final JTextField urlField;
+    private final JScrollPane jScroll;
     final JLabel statusBar = new JLabel(" ");
     private String url;
     private String url2;
@@ -89,7 +78,7 @@ public class HelpWindow extends KilCliInternalFrame implements HyperlinkListener
 	private static String[] previousURLs = new String[50];
 	private static String[] previousURLsTmp = new String[50];
 	private static int previousCount = 0;
-	private String cssFileName;
+	private final String cssFileName;
 	private String thisPage = "";
 
 	public void updateTheme() {
@@ -117,7 +106,8 @@ public class HelpWindow extends KilCliInternalFrame implements HyperlinkListener
 		back.setToolTipText("Goes back to the previous page");
 		back.addActionListener(new ActionListener() {
 			//function for when someone clicks OK
-		    public void actionPerformed(ActionEvent e) {
+		    @Override
+			public void actionPerformed(ActionEvent e) {
 				if (previousCount == 50) {
 					previousCount = 0;
 				}
@@ -176,6 +166,7 @@ public class HelpWindow extends KilCliInternalFrame implements HyperlinkListener
         jScroll.setVisible(true);
 
         urlField.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent ae) {
 				setPage(ae.getActionCommand(), false);
 			}
@@ -204,6 +195,7 @@ public class HelpWindow extends KilCliInternalFrame implements HyperlinkListener
 	 * @param even a HyperlinkEvent, activated by a mouse click
 	 */
 
+	@Override
 	public void hyperlinkUpdate(HyperlinkEvent he) {
     	HyperlinkEvent.EventType type = he.getEventType();
     	if (type == HyperlinkEvent.EventType.ENTERED) {
@@ -365,11 +357,10 @@ public class HelpWindow extends KilCliInternalFrame implements HyperlinkListener
 	public void backgroundColorChooser(String file) {
 		JColorChooser chooser = new JColorChooser();
 		chooser.setVisible(true);
-		Color c;
 		String windowName = this.getTitle();
 
 		//If we get a real color choice, then update the background
-		c = chooser.showDialog(KilCliThread.getKilCli(), "Background Color Selection", java.awt.Color.black);
+		Color c = chooser.showDialog(KilCliThread.getKilCli(), "Background Color Selection", java.awt.Color.black);
 		if (c != null) {
 			windowName = windowName.toLowerCase();
 			int searchIndex = windowName.indexOf(" ");

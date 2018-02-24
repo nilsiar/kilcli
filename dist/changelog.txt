@@ -1,5 +1,9 @@
 Change Log -
 
+Version - 1.0.4
+-Added City Shouts window
+-Modified connection handling to try a list of addresses
+
 Version - 1.0.3
 -Modified the Hp/Sp parsing
 -Updated the web page links

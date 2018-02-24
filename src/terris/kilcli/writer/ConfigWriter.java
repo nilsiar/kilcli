@@ -30,13 +30,10 @@
 package terris.kilcli.writer;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.io.PrintWriter;
 
 /**
  * ConfigWriter for KilCli is the class responsible for<br>
@@ -172,6 +169,11 @@ public class ConfigWriter {
 			outFile.println("ConnectToKChat=" + settings[84]);
 			outFile.println("KChatTell=" + settings[85]);
 			outFile.println("KChatChat=" + settings[86]);
+			outFile.println("CityShoutsText=" + settings[87]);
+			outFile.println("CityShoutStamp=" + settings[88]);
+			outFile.println("OldStyleCityShouts=" + settings[89]);
+			outFile.println("CityShoutsPrefix=" + settings[90]);
+			
 			outFile.close();
 
 		}

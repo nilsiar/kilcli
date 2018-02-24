@@ -30,14 +30,21 @@
 package terris.kilcli.writer;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import terris.kilcli.window.*;
+import java.io.PrintWriter;
+
+import terris.kilcli.window.CommandLine;
+import terris.kilcli.window.EffectsPanel;
+import terris.kilcli.window.GameWindow;
+import terris.kilcli.window.HandsPanel;
+import terris.kilcli.window.HardenPanel;
+import terris.kilcli.window.InfoPanel;
+import terris.kilcli.window.MovementPanel;
+import terris.kilcli.window.StatusBar;
+import terris.kilcli.window.StatusBarHor;
+import terris.kilcli.window.TimersPanel;
 
 /**
  * WindowConfigWriter for KilCli is the class responsible for<br>
@@ -49,7 +56,7 @@ public class WindowConfigWriter {
 	private static String fileName;
 	private static File dstFile;
 	private static PrintWriter outFile;
-	private static String[] settings = new String[119];
+	private static String[] settings = new String[125];
 	private static String slash = System.getProperty("file.separator");
 
 	/**
@@ -199,6 +206,15 @@ public class WindowConfigWriter {
 			outFile.println("HardenWidth=" + settings[116]);
 			outFile.println("HardenHeight=" + settings[117]);
 			outFile.println("HardenBar=" + settings[118]);
+			
+			outFile.println("CityShoutsClosed=" + settings[119]);
+			outFile.println("CityShoutsX=" + settings[120]);
+			outFile.println("CityShoutsY=" + settings[121]);
+			outFile.println("CityShoutsWidth=" + settings[122]);
+			outFile.println("CityShoutsHeigth=" + settings[123]);
+			outFile.println("CityShoutsBar=" + settings[124]);
+
+			
 			outFile.close();
 		}
 	}
@@ -225,7 +241,7 @@ public class WindowConfigWriter {
 	 * @param info - InfoPanel to extract settings from
 	 */
 
-	public static void getSettings(int frameX, int frameY, int frameWidth, int frameHeight, GameWindow game, MovementPanel movement, StatusBar status, GameWindow guildshouts, GameWindow templeshouts, GameWindow tells, GameWindow chats, GameWindow shouts, CommandLine commandLine, GameWindow hhshouts, GameWindow events, GameWindow wails, HandsPanel hands, TimersPanel timers, EffectsPanel effects, GameWindow logons, StatusBarHor statusHor, InfoPanel info, HardenPanel harden) {
+	public static void getSettings(int frameX, int frameY, int frameWidth, int frameHeight, GameWindow game, MovementPanel movement, StatusBar status, GameWindow guildshouts, GameWindow templeshouts, GameWindow cityshouts, GameWindow tells, GameWindow chats, GameWindow shouts, CommandLine commandLine, GameWindow hhshouts, GameWindow events, GameWindow wails, HandsPanel hands, TimersPanel timers, EffectsPanel effects, GameWindow logons, StatusBarHor statusHor, InfoPanel info, HardenPanel harden) {
 		settings[0] = "" + game.isClosed();
 		settings[1] = "" + game.getX();
 		settings[2] = "" + game.getY();
@@ -345,6 +361,15 @@ public class WindowConfigWriter {
 		settings[116] = "" + harden.getWidth();
 		settings[117] = "" + harden.getHeight();
 		settings[118] = "" + harden.checkBar();
+		
+		settings[119] = "" + cityshouts.isClosed();
+		settings[120] = "" + cityshouts.getX();
+		settings[121] = "" + cityshouts.getY();
+		settings[122] = "" + cityshouts.getWidth();
+		settings[123] = "" + cityshouts.getHeight();
+		settings[124] = "" + cityshouts.checkBar();
+
+		
 		try {
 			write(settings);
 		} catch (IOException ioe) {

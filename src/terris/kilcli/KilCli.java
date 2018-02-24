@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
@@ -138,7 +139,7 @@ import terris.kilcli.writer.WindowConfigWriter;
  */
 
 public class KilCli extends JFrame implements ActionListener {
-	private static final String VERSION = "KilCli - 1.0.3";
+	private static final String VERSION = "KilCli - 1.0.4";
 
 	//connection variables
 	private static boolean loggedIn = false;
@@ -156,6 +157,7 @@ public class KilCli extends JFrame implements ActionListener {
 	private static GameWindow tells;
 	private static GameWindow chats;
 	private static GameWindow templeshouts;
+	private static GameWindow cityshouts;
 	private static HelpWindow help;
 	private static MovementPanel movement;
 	private static GameWindow hhshouts;
@@ -218,7 +220,7 @@ public class KilCli extends JFrame implements ActionListener {
 	private static ArrayList aliases;
 	private static ArrayList macros;
 	private static ArrayList nicknames;
-	private static String[] options = new String[87];
+	private static String[] options = new String[91];
 	private static String[] colors;
 	private static String[] settings;
 	private static boolean sounds = true;
@@ -560,6 +562,7 @@ public class KilCli extends JFrame implements ActionListener {
         windows.add(windowsMenuItem("Chats Window", chats));
         windows.add(windowsMenuItem("Events Window", events));
 		windows.add(windowsMenuItem("Logons Window", logons));
+		windows.add(windowsMenuItem("City Shouts Window", cityshouts));
 		//windows.add(windowsMenuItem("Quests Window", quests));
         windows.addSeparator();
         windows.add(windowsMenuItem("Help Window", help));
@@ -608,6 +611,7 @@ public class KilCli extends JFrame implements ActionListener {
 				shouts.removeBar();
 				tells.removeBar();
 				templeshouts.removeBar();
+				cityshouts.removeBar();
 				command.removeBar();
 				status.removeBar();
 				movement.removeBar();
@@ -659,6 +663,7 @@ public class KilCli extends JFrame implements ActionListener {
 				shouts.restoreBar();
 				tells.restoreBar();
 				templeshouts.restoreBar();
+				cityshouts.restoreBar();
 				command.restoreBar();
 				status.restoreBar();
 				movement.restoreBar();
@@ -843,8 +848,9 @@ public class KilCli extends JFrame implements ActionListener {
 		//helpMenu.add(webpageMenuItem("KilCli Homepage", "http://www.kilcli.com"));
 		//helpMenu.add(webpageMenuItem("KilCli Support Board", "http://forums.kilcli.com"));
 		//helpMenu.addSeparator();
-		helpMenu.add(webpageMenuItem("Legends of Terris Homepage", "http://www.legendsofterris.com"));
-		helpMenu.add(webpageMenuItem("Terris Message Board", "http://www.legendsofterris.com/forums"));
+		helpMenu.add(webpageMenuItem("Legends of Terris Homepage", "https://www.legendsofterris.com"));
+		helpMenu.add(webpageMenuItem("Terris Message Board", "https://www.legendsofterris.com/forums/"));
+		helpMenu.add(webpageMenuItem("Terris Wiki", "https://www.legendsofterris.com/wiki/"));
 		helpMenu.addSeparator();
 		helpMenu.add(webpageMenuItem("Legends of Cosrin Homepage", "http://www.cosrintwo.com"));
 		helpMenu.add(webpageMenuItem("Cosrin Message Board", "http://www.cosrintwo.com/forums"));
@@ -944,6 +950,8 @@ public class KilCli extends JFrame implements ActionListener {
 			f = guildshouts;
 		} else if (name.equals("Temple Shouts Window")) {
 			f = templeshouts;
+		} else if (name.equals("City Shouts Window")) {
+			f = cityshouts;			
 		} else if (name.equals("HH Shouts Window")) {
 			f = hhshouts;
 		} else if (name.equals("Wails Window")) {
@@ -1353,7 +1361,7 @@ public class KilCli extends JFrame implements ActionListener {
 		FilterWriter.setProfile(profile);
 		SquelchWriter.setProfile(profile);
 		if ((game != null) && (getWidth() != 0)) {
-        	WindowConfigWriter.getSettings(getX(), getY(), getWidth(), getHeight(), game, movement, status, guildshouts, templeshouts, tells, chats, shouts, command, hhshouts, events, wails, hands, timers, effects, logons, statusHor, info, harden);
+        	WindowConfigWriter.getSettings(getX(), getY(), getWidth(), getHeight(), game, movement, status, guildshouts, templeshouts, cityshouts, tells, chats, shouts, command, hhshouts, events, wails, hands, timers, effects, logons, statusHor, info, harden);
 		}
 		WindowConfigWriter.setProfile(profile);
 		NicknamesWriter.setProfile(profile);
@@ -1400,6 +1408,7 @@ public class KilCli extends JFrame implements ActionListener {
 		status.updatePosition(Integer.parseInt(settings[11]), Integer.parseInt(settings[12]), Integer.parseInt(settings[13]), Integer.parseInt(settings[14]), settings[10], settings[67]);
 		guildshouts.updatePosition(Integer.parseInt(settings[16]), Integer.parseInt(settings[17]), Integer.parseInt(settings[18]), Integer.parseInt(settings[19]), settings[15], settings[68]);
 		templeshouts.updatePosition(Integer.parseInt(settings[21]), Integer.parseInt(settings[22]), Integer.parseInt(settings[23]), Integer.parseInt(settings[24]), settings[20], settings[69]);
+		cityshouts.updatePosition(Integer.parseInt(settings[120]), Integer.parseInt(settings[121]), Integer.parseInt(settings[122]), Integer.parseInt(settings[123]), settings[120], settings[88]);
 		tells.updatePosition(Integer.parseInt(settings[26]), Integer.parseInt(settings[27]), Integer.parseInt(settings[28]), Integer.parseInt(settings[29]), settings[25], settings[70]);
 		chats.updatePosition(Integer.parseInt(settings[31]), Integer.parseInt(settings[32]), Integer.parseInt(settings[33]), Integer.parseInt(settings[34]), settings[30], settings[71]);
 		shouts.updatePosition(Integer.parseInt(settings[36]), Integer.parseInt(settings[37]), Integer.parseInt(settings[38]), Integer.parseInt(settings[39]), settings[35], settings[72]);
@@ -1511,6 +1520,7 @@ public class KilCli extends JFrame implements ActionListener {
         status = new StatusBar(Integer.parseInt(settings[11]), Integer.parseInt(settings[12]), Integer.parseInt(settings[13]), Integer.parseInt(settings[14]), options[55].equalsIgnoreCase("true"));
         guildshouts = new GameWindow("Guild Shouts Window", cssFolder + "guildshoutswindow.css", Integer.parseInt(settings[16]), Integer.parseInt(settings[17]), Integer.parseInt(settings[18]), Integer.parseInt(settings[19]), options[48].equalsIgnoreCase("true"));
         templeshouts = new GameWindow("Temple Shouts Window", cssFolder + "templeshoutswindow.css", Integer.parseInt(settings[21]), Integer.parseInt(settings[22]), Integer.parseInt(settings[23]), Integer.parseInt(settings[24]), options[59].equalsIgnoreCase("true"));
+        cityshouts = new GameWindow("City Shouts Window", cssFolder + "cityshoutswindow.css", Integer.parseInt(settings[120]), Integer.parseInt(settings[121]), Integer.parseInt(settings[122]), Integer.parseInt(settings[123]), options[88].equalsIgnoreCase("true"));
         tells = new GameWindow("Tells Window", cssFolder + "tellswindow.css", Integer.parseInt(settings[26]), Integer.parseInt(settings[27]), Integer.parseInt(settings[28]), Integer.parseInt(settings[29]), options[57].equalsIgnoreCase("true"));
         chats = new GameWindow("Chats Window", cssFolder + "chatswindow.css", Integer.parseInt(settings[31]), Integer.parseInt(settings[32]), Integer.parseInt(settings[33]), Integer.parseInt(settings[34]), options[44].equalsIgnoreCase("true"));
         shouts = new GameWindow("Shouts Window", cssFolder + "shoutswindow.css", Integer.parseInt(settings[36]), Integer.parseInt(settings[37]), Integer.parseInt(settings[38]), Integer.parseInt(settings[39]), options[53].equalsIgnoreCase("true"));
@@ -1775,6 +1785,21 @@ public class KilCli extends JFrame implements ActionListener {
 			}
 
 			help.setClosed(true);
+			
+			
+			//check if we have to remove the City Shouts title bar
+			if (settings[89].toLowerCase().equals("false")) {
+				cityshouts.removeBar();
+			}
+
+			//check the City Shouts window setting
+	        if (settings[88].toLowerCase().equals("true")) {
+        		cityshouts.setClosed(true);
+			} else {
+				cityshouts.setVisible(true);
+				desktop.add(cityshouts);
+			}
+			
 
 		} catch (Exception e) {
 			System.err.println(e);
@@ -2131,6 +2156,36 @@ public class KilCli extends JFrame implements ActionListener {
 			hhshouts.Write(input);
 		}
 	}
+	
+	/**
+	 * Output line to the City Shouts Window (if open)
+	 *
+	 * @param input String that is attempting to be outputted
+	 */
+
+	public static void cityShoutsWrite(String input) {
+		input = Squelch.analyze(input, false);
+		input = encryptAnalyze(input);
+		//if hhshouts window is closed...
+		if (cityshouts.isClosed()) {
+			//test shouts window, if closed...
+			if (shouts.isClosed()) {
+				//test game window, if closed...
+				if (game.isClosed()) {
+					//input lost, no windows open
+				} else {
+					//otherwise write to game
+					game.Write(options[90] + input);
+				}
+			} else {
+				//otherwise, write to shouts
+				shouts.Write(options[90] + input);
+			}
+		} else {
+			//otherwise, write to cityshouts
+			cityshouts.Write(input);
+		}
+	}
 
 	/**
 	 * Output line to the Wails Window (if open)
@@ -2309,6 +2364,12 @@ public class KilCli extends JFrame implements ActionListener {
 					skipOutput = true;
 					sendReceive.setSkipOutput(skipOutput);
 					break;
+					
+				case 'c':					
+					cityShoutsWrite(input.substring(3, input.length()));
+					skipOutput = true;
+					sendReceive.setSkipOutput(skipOutput);
+					break;
 
 				//if its W, print to the wails window
 				case 'W':
@@ -2356,6 +2417,8 @@ public class KilCli extends JFrame implements ActionListener {
 		textRouting.put(new Integer('Q'), options[32]);
 		//tshouts
 		textRouting.put(new Integer('T'), options[33]);
+		//cityshouts
+		textRouting.put(new Integer('c'), options[87]);		
 		//wails
 		textRouting.put(new Integer('W'), options[34]);
 		//tells
@@ -3514,7 +3577,11 @@ public class KilCli extends JFrame implements ActionListener {
 	 * @param String[] o - the new array of config settings
 	 */
 	public static void updateOptions(String[] o) {
-		options[0] = o[0];
+		
+		Arrays.fill(options, "");
+		System.arraycopy(o, 0,  options,  0, Math.min(options.length, o.length));
+		
+		
 		if (logging && (!o[1].toLowerCase().startsWith("true"))) {
 			log.close();
 			logging = false;
@@ -3524,109 +3591,29 @@ public class KilCli extends JFrame implements ActionListener {
 		    log.start();
 			logging = true;
 		}
-		options[1] = o[1];
-		options[2] = o[2];
-		options[3] = o[3];
-		options[4] = o[4];
-		options[5] = o[5];
-		options[6] = o[6];
-		options[7] = o[7];
-		options[8] = o[8];
-		options[9] = o[9];
-		options[10] = o[10];
-		options[11] = o[11];
-		options[12] = o[12];
-		options[13] = o[13];
-		options[14] = o[14];
-		options[15] = o[15];
-		options[16] = o[16];
-		options[17] = o[17];
-		options[18] = o[18];
-		options[19] = o[19];
-		//options[20] = o[20];
-
-		options[21] = o[21];
+		
 		if (sendReceive != null) {
 			sendReceive.setTrigger(o[21].equalsIgnoreCase("true"));
 			//ChatIO.setTrigger(o[21].equalsIgnoreCase("true"));
 		}
-		options[22] = o[22];
-		options[23] = o[23];
+
 		if (options[23].toLowerCase().equals("true")) {
 			sounds = true;
 		} else {
 			sounds = false;
 		}
 		Script.setSound(sounds);
-		options[24] = o[24];
-		options[25] = o[25];
-		options[26] = o[26];
+
 		if ((help != null) && (help.getCreated())) {
 			help.setHelpAddress(o[26]);
 		}
-		options[27] = o[27];
-		options[28] = o[28];
-		options[29] = o[29];
-		options[30] = o[30];
-		options[31] = o[31];
-		options[32] = o[32];
-		options[33] = o[33];
-		options[34] = o[34];
-		options[35] = o[35];
-		options[36] = o[36];
-		options[37] = o[37];
-		options[38] = o[38];
-		options[39] = o[39];
-		options[40] = o[40];
-		options[41] = o[41];
-		options[42] = o[42];
-		options[43] = o[43];
-		options[44] = o[44];
-		options[45] = o[45];
-		options[46] = o[46];
-		options[47] = o[47];
-		options[48] = o[48];
-		options[49] = o[49];
-		options[50] = o[50];
-		options[51] = o[51];
-		options[52] = o[52];
-		options[53] = o[53];
-		options[54] = o[54];
-		options[55] = o[55];
-		options[56] = o[56];
-		options[57] = o[57];
-		options[58] = o[58];
-		options[59] = o[59];
-		options[60] = o[60];
-		options[61] = o[61];
-		options[62] = o[62];
-		options[63] = o[63];
-		options[64] = o[64];
-		options[65] = o[65];
-		options[66] = o[66];
-		options[67] = o[67];
+
 		KilCliText.setWindowBuffer(Integer.parseInt(o[67]));
-		options[68] = o[68];
-		options[69] = o[69];
-		options[70] = o[70];
-		options[71] = o[71];
-		options[72] = o[72];
-		options[73] = o[73];
-		options[74] = o[74];
-		options[75] = o[75];
-		options[76] = o[76];
-		options[77] = o[77];
-		options[78] = o[78];
-		options[79] = o[79];
-		options[80] = o[80];
-		options[81] = o[81];
+		
 		checkHarden = options[81].equalsIgnoreCase("true");
-		options[82] = o[82];
+		
 		//chatToKchat = options[82].equalsIgnoreCase("true");
-		options[83] = o[83];
-		options[84] = o[84];
-		options[85] = o[85];
-		options[86] = o[86];
+		
 		CommandLine.numpadEnterSendsCommand(options[83].equalsIgnoreCase("true"));
 		if (sendReceive != null) {
 			sendReceive.setNetMelee(options[69].equalsIgnoreCase("true"));
@@ -4506,6 +4493,17 @@ public class KilCli extends JFrame implements ActionListener {
 						} else if (property.equalsIgnoreCase("kchatchat")) {
 							options[86] = value;
 							createTextRouting();
+							
+						} else if (property.equalsIgnoreCase("cityshoutstext")) {
+							options[87] = value;
+						} else if (property.equalsIgnoreCase("CityShoutStamp")) {
+							options[88] = value;
+							checkStamps();
+						} else if (property.equalsIgnoreCase("OldStyleCityShouts")) {
+							options[89] = value;
+							checkTitleBars();
+						} else if (property.equalsIgnoreCase("CityShoutsPrefix")) {
+							options[90] = value;
 						} else {
 							gameWrite("<br><b>Error! Bad configuration property name:</b> " + property);
 							gameWrite("<u><b>Valid property names are:</b></u>");
@@ -4515,6 +4513,9 @@ public class KilCli extends JFrame implements ActionListener {
 							gameWrite("ChatStamp");
 							gameWrite("ChatsText");
 							gameWrite("ChatToKChat");
+							gameWrite("CityShoutsText");
+							gameWrite("CityShoutStamp");
+							gameWrite("CityShoutPrefix");
 							gameWrite("ConnectToKChat");
 							gameWrite("EchoPrefix");
 							gameWrite("EnableNicknames");
@@ -4543,6 +4544,7 @@ public class KilCli extends JFrame implements ActionListener {
 							gameWrite("MonitorHarden");
 							gameWrite("NetMelee");
 							gameWrite("OldStyleChats");
+							gameWrite("OldStyleCityShouts");
 							gameWrite("OldStyleCommandLine");
 							gameWrite("OldStyleEffects");
 							gameWrite("OldStyleEvents");
@@ -4903,7 +4905,7 @@ public class KilCli extends JFrame implements ActionListener {
 			if (logging) {
 				log.close();
 			}
-        	WindowConfigWriter.getSettings(getX(), getY(), getWidth(), getHeight(), game, movement, status, guildshouts, templeshouts, tells, chats, shouts, command, hhshouts, events, wails, hands, timers, effects, logons, statusHor, info, harden);
+        	WindowConfigWriter.getSettings(getX(), getY(), getWidth(), getHeight(), game, movement, status, guildshouts, templeshouts, cityshouts, tells, chats, shouts, command, hhshouts, events, wails, hands, timers, effects, logons, statusHor, info, harden);
         	try {
         	   	ConfigWriter.configWrite(options);
         	    ConfigWriter.colorsWrite(colors);
@@ -4994,10 +4996,11 @@ public class KilCli extends JFrame implements ActionListener {
 		switchTitleBar(statusHor, options[56].equalsIgnoreCase("true"));
 		switchTitleBar(tells, options[57].equalsIgnoreCase("true"));
 		switchTitleBar(timers, options[58].equalsIgnoreCase("true"));
-		switchTitleBar(templeshouts, options[59].equalsIgnoreCase("true"));
+		switchTitleBar(templeshouts, options[59].equalsIgnoreCase("true"));		
 		switchTitleBar(wails, options[60].equalsIgnoreCase("true"));
 		switchTitleBar(info, options[62].equalsIgnoreCase("true"));
 		switchTitleBar(harden, options[80].equalsIgnoreCase("true"));
+		switchTitleBar(cityshouts, options[89].equalsIgnoreCase("true"));
 	}
 
 	private static void switchTitleBar(KilCliInternalFrame window, boolean remove) {
@@ -5021,6 +5024,7 @@ public class KilCli extends JFrame implements ActionListener {
 		tells.setStamp(options[76].equalsIgnoreCase("true"));
 		templeshouts.setStamp(options[77].equalsIgnoreCase("true"));
 		wails.setStamp(options[78].equalsIgnoreCase("true"));
+		cityshouts.setStamp(options[88].equalsIgnoreCase("true"));
 	}
 
 	public static void setStamp(KilCliInternalFrame frame, boolean stamp) {
@@ -5041,7 +5045,9 @@ public class KilCli extends JFrame implements ActionListener {
 		} else if (frame == templeshouts) {
 			options[77] = new Boolean(stamp).toString();
 		} else if (frame == wails) {
-			options[78] = new Boolean(stamp).toString();
+			options[78] = new Boolean(stamp).toString();	
+		} else if (frame == cityshouts) {
+			options[88] = new Boolean(stamp).toString();
 		}
 	}
 

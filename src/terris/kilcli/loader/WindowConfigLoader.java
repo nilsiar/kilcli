@@ -29,16 +29,16 @@
 
 package terris.kilcli.loader;
 
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.Insets;
+import java.awt.Toolkit;
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.Insets;
-import java.awt.GraphicsEnvironment;
 
 /**
  * WindowConfigLoader for KilCli is the class responsible for<br>
@@ -47,7 +47,7 @@ import java.awt.GraphicsEnvironment;
  */
 
 public class WindowConfigLoader {
-	private static String settings[] = new String[119];
+	private static String settings[] = new String[125];
 
 	/**
 	 * Loads the settings from the windowconfig.txt file
@@ -302,6 +302,17 @@ public class WindowConfigLoader {
 		settings[116] = "100";
 		settings[117] = "115";
 		settings[118] = "false";
+		
+		//city shouts defaults
+		settings[119] = "false";
+		temp = "" + ((int)(screenSize.width * 0.51));
+		settings[120] = temp;
+		temp = "" + ((int)(screenSize.height - (screenSize.height * 0.595)));
+		settings[121] = temp;
+		temp = "" + ((int)(screenSize.width * 0.45));
+		settings[123] = temp;
+		temp = "" + ((int)(screenSize.height * 0.25));
+		settings[124] = temp;
 	}
 
 }

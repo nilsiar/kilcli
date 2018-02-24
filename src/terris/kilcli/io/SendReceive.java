@@ -50,7 +50,7 @@ import terris.kilcli.window.InfoPanel;
 /**
  * SendReceive for KilCli is the class used to send and receive<br>
  * data from the game server<br>
- * Ver: 1.0.2
+ * Ver: 1.0.4
  */
 
 public class SendReceive implements Runnable {
@@ -191,6 +191,48 @@ public class SendReceive implements Runnable {
 			return true;
 		}
 	}
+	
+	/***
+	 *  This is the number of times to attempt a connection.  It should be at least as high as the max number of addresses.
+	 *  When the attempt is greater than the number of addresses the final entry in the array is used.
+	 */
+	
+	private final int MAX_CONNECTION_ATTEMPTS = 6;
+	
+	private final String[] terrisAddresses = {
+			"ogcserver02.onlinegamescompany.net",
+			"terris.spiritualkarma.co.uk",
+			"217.35.88.1971"			
+	};
+	
+	private final String[] cosrinAddresses = {
+			"play.cosrintwo.com",			
+			"81.143.167.18"			
+	};
+	
+	private int clamp(int val, int low, int high)
+	{
+		if (val <= low) return low;
+		if (val >= high) return high;
+		return val;
+	}
+	
+	/**
+	 * 
+	 * @param attempt how many times have we tried
+	 * @return address/ip to try and connect to
+	 */
+	
+	private String getConnectionAddress(int attempt)
+	{		
+		switch(gameNumber)
+		{
+			case 0: return terrisAddresses[clamp(attempt, 1, terrisAddresses.length) - 1];
+			case 1: return cosrinAddresses[clamp(attempt, 1, cosrinAddresses.length) - 1];
+			default:
+				throw new IllegalArgumentException("Unknown game type for getConnectionAddress");
+		}		
+	}
 
 	/**
 	 * Connects to the needed remote server
@@ -200,39 +242,50 @@ public class SendReceive implements Runnable {
 
 	public boolean connect() {
 		connSock = null;
-		String server = "";
-		int port = 0;
-		//attempts to establish a connection
-		try {
-			if (gameNumber == 0) {
-				server = "ogcserver02.onlinegamescompany.net";								
-				port = 31000;
-			} else if (gameNumber == 1) {
-				server = "play.cosrintwo.com";
-				port = 31000;
-			}
-			connectToServer(server, port);
-		    outStream = new BufferedOutputStream(connSock.getOutputStream());
+		int attempt = 0;
+		connected = false;
+		boolean output_connected = false;
+		
+		while (attempt < MAX_CONNECTION_ATTEMPTS && output_connected == false)
+		{
+			attempt++;
 
-		} catch (Exception oops) {
-			KilCli.gameWrite("Exception while connecting:" + oops);
-			KilCli.gameWrite("Trying to connect via IP address...");
+			String server = getConnectionAddress(attempt);
+			int port = 31000;
+
+	
+			//attempts to establish a connection
 			try {
-				connSock.close();
-				if (gameNumber == 0) {
-					server = "217.35.88.197";
-				} else if (gameNumber == 1) {
-					server = "81.143.167.18";
-				}
+				KilCli.gameWrite("Attempting connection " + attempt + " to " + server + ":" + port);
+				
 				connectToServer(server, port);
-				outStream = new BufferedOutputStream(connSock.getOutputStream());
-			} catch (Exception oops2) {
-				KilCli.gameWrite("IP Address failed, cannot connect to game.");
-				connected = false;
-				return connected;
+			    outStream = new BufferedOutputStream(connSock.getOutputStream());
+	
+			    // got a stream
+			    output_connected = true;
+			    
+			} catch (Exception oops) {
+				KilCli.gameWrite("Exception while connecting:" + oops);
+				
+				try
+				{					
+					if (connSock != null)
+						connSock.close();
+					
+					outStream = null;
+				} catch (Exception e)
+				{
+					// ignore
+				}
+				
 			}
 		}
+		
+		if (!output_connected)
+			return false;
 
+		// connected outputstream to game - now get input stream
+		
 	    try {
 			inStream = new BufferedInputStream(connSock.getInputStream());
         	//set connected flag to true
@@ -248,8 +301,9 @@ public class SendReceive implements Runnable {
 	        KilCli.gameWrite("No inStream, could not complete connection");
 	        connected = false;
 	        inStream = null;
-	        return connected;
 	    }
+	    
+        return connected;
 	}
 
 

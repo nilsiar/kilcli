@@ -85,3 +85,7 @@ NumpadEnterSendCommand=false
 ConnectToKChat=false
 KChatTell=t
 KChatChat=C
+CityShoutsText=c
+CityShoutStamp=false
+OldStyleCityShouts=false
+CityShoutsPrefix=CityShouts: 
